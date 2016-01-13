@@ -2,16 +2,28 @@
 
 import * as hapi from "hapi";
 import Controllers from "./controllers";
+//import Collection from "structure-js/ts/model/Collection";
 import * as fs from "fs";
 import * as fsp from "fs-promise";
 import * as mkdirp from "mkdirp";
 import * as nunjucks from "nunjucks";
-
+import * as Firebase from "firebase";
 
 var port = process.env.port || 3000;
 var server = new hapi.Server();
 
 server.connection({ port: port });
+
+
+//let collection = new Collection();
+//console.log("collection", collection);
+
+const myFirebaseRef = new Firebase('https://codebelt.firebaseio.com/todo');
+
+myFirebaseRef.on('value', function(snapshot) {
+  let data = snapshot.val();
+  console.log(data);
+});
 
 
 //Register Controllers
@@ -31,7 +43,7 @@ const htmlData = {
     { name : 'item #3' },
     { name : 'item #4' },
   ]
-}
+};
 
 const html =
 `<!doctype html>
@@ -57,7 +69,7 @@ fsp.writeFile('hello1.txt', 'hello world')
     return fsp.readFile('hello1.txt', {encoding:'utf8'});
   })
   .then((contents) => {
-    console.log("contentss", contents);
+    console.log('contentss', contents);
   });
 
 mkdirp('tmp/some/path/foo', function(err) {
